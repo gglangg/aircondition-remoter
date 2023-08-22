@@ -86,7 +86,7 @@ def about():
 @app.route('/update')
 def update():
     global CMD
-    if CMD=='':
+    if CMD!='':
         return None,404
 
     key = request.args.get('key', 0)
