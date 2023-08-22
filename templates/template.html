@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Air Conditioner Remote</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        h1 {
+            color: #007BFF;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .temperature-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            align-items: center;
+        }
+        .temperature {
+            font-size: 25px;
+            margin: 0 10px;
+        }
+        .temperature-btn {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 16px 20px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 35px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Air Conditioner Remote</h1>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <span class="temperature" id="msgDisplay">{{msg}}</span>
+    <br>
+    <br>
+    <span class="temperature" id="modeDisplay">{{mode}}</span>
+    <br>
+    <button class="button" onclick="power()">power off</button>
+    <div class="button-container">
+        <button class="button" onclick="cool()">冷氣</button>
+        <button class="button" onclick="dry()">除濕</button>
+        <button class="button" onclick="warm()">暖氣</button>
+    </div>
+    <div class="temperature-container">
+        <button class="temperature-btn" onclick="decreaseTemp()">-</button>
+        <span class="temperature" id="temperatureDisplay">{{temperature}}</span>
+        <button class="temperature-btn" onclick="increaseTemp()">+</button>
+    </div>
+
+    <script>
+        var temperature = parseInt({{temperature}});
+        var temperatureDisplay = document.getElementById("temperatureDisplay");
+        var modeDisplay = document.getElementById("modeDisplay");
+        var msgDisplay = document.getElementById("msgDisplay");
+
+        function cool() {
+            modeDisplay.innerHTML = "冷氣";
+            httpGet(temperature)
+        }
+        function dry() {
+            modeDisplay.innerHTML = "除濕";
+            httpGet(temperature)
+        }
+        function warm() {
+            modeDisplay.innerHTML = "暖氣";
+            httpGet(temperature)
+        }
+
+        function increaseTemp() {
+            if (temperature < 30) {
+                temperature++;
+                httpGet(temperature)
+                updateTemperatureDisplay();
+            }
+        }
+
+        function decreaseTemp() {
+            if (temperature > 20) {
+                temperature--;
+                httpGet(temperature)
+                updateTemperatureDisplay();
+            }
+        }
+
+        function updateTemperatureDisplay() {
+            temperatureDisplay.innerHTML = temperature;
+        }
+        function power(){
+
+                var url = "http://43.201.228.24:8080/run?key={{ key }}&cmd=POWER_OFF";
+                console.log(url);
+                var xmlHttp = new XMLHttpRequest();
+
+                xmlHttp.open( "GET", url, true ); // true for synchronous request
+                xmlHttp.send( null );
+                return xmlHttp.responseText;
+        }
+        function httpGet(tempe){
+            var cmd=""
+            if(modeDisplay.innerHTML=="暖氣"){
+                cmd = 'HEAT_'+'fauto_t'+tempe
+            }else if(modeDisplay.innerHTML=="冷氣"){
+                cmd = 'COOL_'+'fauto_t'+tempe
+            }else if(modeDisplay.innerHTML=="除濕"){
+                cmd = 'DRY_'+'fauto_t'+tempe
+            }
+            var url = "http://43.201.228.24:8080/run?key={{ key }}&cmd=" + cmd;
+            console.log(url);
+            var xmlHttp = new XMLHttpRequest();
+
+            xmlHttp.open( "GET", url, true ); // true for synchronous request
+            xmlHttp.send( null );
+            return xmlHttp.responseText;
+        }
+
+
+        function foo() {
+            var url = "http://43.201.228.24:8080/update?key={{ key }}"
+            // your function code here
+            var xmlHttp = new XMLHttpRequest();
+            var xmlHttp = new XMLHttpRequest();
+
+            xmlHttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var jsonData = JSON.parse(this.responseText);
+                    temperature = jsonData["temperature"];
+                    mode = jsonData["mode"];
+                    msg = jsonData["msg"];
+                    
+                    updateTemperatureDisplay();
+                    modeDisplay.innerHTML = mode;
+                    msgDisplay.innerHTML = msg;
+                }
+            };
+            xmlHttp.open( "GET", url, true ); // true for synchronous request
+            xmlHttp.send();
+
+            setTimeout(foo, 5000);
+        }
+        foo();
+
+    </script>
+</body>
+</html>
