@@ -19,6 +19,7 @@ def runCMD(cmd:str):
     sleep(1)
     if CMD == cmd:
         os.system(cmd)
+        CMD=''
     
 TEMPERATURE = 25
 
@@ -83,10 +84,10 @@ def about():
 
 
 @app.route('/update')
-
 def update():
-
-
+    global CMD
+    if CMD=='':
+        return None,404
 
     key = request.args.get('key', 0)
 
