@@ -87,7 +87,7 @@ def about():
 def update():
     global CMD
     if CMD!='':
-        return None,404
+        return "W",404
 
     key = request.args.get('key', 0)
 
