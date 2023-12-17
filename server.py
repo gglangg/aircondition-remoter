@@ -93,10 +93,7 @@ def update():
 
     if key==KEY:
 
-
-
         # LATEST_UPDATE = returnUpdateTime()
-
         data = {
 
             'msg': LATEST_UPDATE,
@@ -106,20 +103,8 @@ def update():
             'temperature': TEMPERATURE,
 
         }    
-
         return jsonify(data)
-
-
-
-    
-
     return '<h1>Invalid Key</h1>'
-
-
-
-
-
-
 
 
 
