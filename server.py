@@ -47,9 +47,9 @@ def about():
     
     key = request.args.get('key', 0)
     cmd = request.args.get('cmd', 0)
-
-    if 'HEAT' in cmd:
-        return render_template('template.html', key=KEY, msg=LATEST_UPDATE+' HEAT disable',mode=MODE,temperature=TEMPERATURE)
+    # uncomment in winter
+    # if 'HEAT' in cmd:
+    #     return render_template('template.html', key=KEY, msg=LATEST_UPDATE+' HEAT disable',mode=MODE,temperature=TEMPERATURE)
 
     if cmd=='POWER_OFF':
         LATEST_UPDATE = 'POWER_OFF'
